@@ -63,6 +63,14 @@ def clear_screen():
     clear = 'cls' if os.name == 'nt' else 'clear'
     os.system(clear)
 
+def get_github_import_options():
+    return{
+        'github_username': get_user_input('GitHub username'),
+        'preserve_timestamps': get_user_input('Preserve timestamps [Y/n]',
+                                                required=False
+                                            ) in {'Y', 'y', None},
+    }
+
 # creates an infinite loop, so does not need to restart the program to use
 # another command
 def loop():
@@ -72,7 +80,12 @@ def loop():
     'B': Option('List bookmarks by date', commands.ListBookmarksCommand()),
     'T': Option('List bookmarks by title', commands.ListBookmarksCommand(order_by='title')),
     'D': Option('Delete a bookmark', commands.DeleteBookmarkCommand(), prep_call=get_bookmark_id_for_deletion),
-    'Q': Option('Quit', commands.QuitCommand())
+    'Q': Option('Quit', commands.QuitCommand()),
+    'G': Option(
+        'Import GitHub stars',
+        commands.ImportGitHubStarsCommand(),
+        prep_call=get_github_import_options
+        ),
     }
 
     print_options(options)
